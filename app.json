@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "smart-market-app",
+    "name": "Smart Market",
     "slug": "smart-market-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "",
+    "githubUrl": "https://github.com/Dms98Br/smart-market-app"
   }
 }

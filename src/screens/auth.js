@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity as TO,
-    Image
+    Image,
+    Alert
 } from 'react-native';
 import Input from '../components/textInput';
 import { connect } from 'react-redux';
@@ -16,34 +17,40 @@ import cart from '../assests/cart.png'
 import axios from 'axios';
 
 const auth = (props) => {
-    const [statgeNew, setStatgeNew] = useState(false);
-    const [name, setName] = useState('Daniel Silva');
-    const [email, setEmail] = useState('daniel@silva');
-    const [password, setPassword] = useState('123456');//123456
-    const [checkPassword, setCheckPassword] = useState('123456');
+    const [stateNew, setStateNew] = useState(false);
+    const [name, setName] = useState('');//Daniel Silva
+    const [email, setEmail] = useState('');//daniel@silva
+    const [password, setPassword] = useState('');//123456
+    const [checkPassword, setCheckPassword] = useState('');
     function signinOrSignup() {
-        if (statgeNew) {
+        if (stateNew) {
             signup()
         } else {
             signin()
         }
     }
     async function signup() {
+        if ( name==='' || email === '' || password ==='' || checkPassword == '')
+            return showError('Preencha todos os campos')
         if (password !== checkPassword) {
             return showError('Senhas não conferem');
         } else {
             AuthService.create({ name, email, password }).then(result => {
-                showSuccess(`Cadastro Realizado. Bem-Vindo(a) ${name} ao SMART-MARKET`);
+                showSuccess(`Cadastro Realizado. Bem-Vindo(a) ao SMART-MARKET`);
+                setStateNew(false)
             }).catch(err => {
                 showError(err)
             })
         }
+
     }
     useEffect(() => {
         console.log('auth useEffect');
-
+        Alert.alert('AVISO','O Smart-Market está em fase de desenvolvimento')
     }, [])
-    async function signin() {        
+    async function signin() {
+        if ( email === '' || password ==='')
+        return showError('Preencha todos os campos')
         await AuthService.login({ email, password }).then(result => {
             props.loginUser({
                 id_user: result.customer._id,
@@ -61,13 +68,13 @@ const auth = (props) => {
         })
     }
     return(
-        <View style={styles.container}>
+        <View style={styles.container}>            
             <View style={styles.formContainer}>
                 <Text style={styles.title}><Image style={styles.cartLogo} source={cart}/> Smart-Market</Text>
                 <Text style={styles.subTitlte}>
-                    {statgeNew ? 'Crie Sua Conta' : 'Informe Seus Dados'}
+                    {stateNew ? 'Crie Sua Conta' : 'Informe Seus Dados'}
                 </Text>
-                {statgeNew &&
+                {stateNew &&
                     <Input icon='user' placeholder='Nome' value={name}
                         onChangeText={name => setName(name)}
                     style={styles.input}/>
@@ -75,25 +82,25 @@ const auth = (props) => {
                 <Input icon='at' placeholder='E-mail' value={email}
                     onChangeText={email => setEmail(email)}
                     style={styles.input}/>
-                <Input icon='lock' placeholder='Senha' value={password}
+                <Input icon='lock' secureTextEntry={true} placeholder='Senha' value={password}
                     onChangeText={password => setPassword(password)}
                     style={styles.input}/>
-                {statgeNew &&
-                    <Input icon='lock' placeholder='Confirme A Senha' value={checkPassword}
-                        onChangeText={checkPassword => setCheckPassword({ checkPassword })}
+                {stateNew &&
+                    <Input icon='lock' secureTextEntry={true} placeholder='Confirme a Senha' value={checkPassword}
+                        onChangeText={checkPassword => setCheckPassword(checkPassword)}
                     style={styles.input}/>
                 }   
                 <TO onPress={signinOrSignup}>
                     <View style={styles.buttonStyle}>
                         <Text style={styles.textButton, styles.button}>
-                            {statgeNew ? 'Registrar' : 'Entrar'}
+                            {stateNew ? 'Registrar' : 'Entrar'}
                         </Text>
                     </View>
                 </TO>
-                <TO onPress={() => setStatgeNew(!statgeNew)}>
+                <TO onPress={() => setStateNew(!stateNew)}>
                     <View style={styles.buttonStyle}>
                         <Text style={styles.textButton}>
-                            {statgeNew ? 'Já Possui Conta' : 'Ainda Não Possui Conta'}
+                            {stateNew ? 'Já Possui Conta' : 'Ainda Não Possui Conta'}
                         </Text>
                     </View>
                 </TO>

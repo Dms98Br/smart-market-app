@@ -21,8 +21,8 @@ const screenMain = (props) => {
     const [showCreateList, setShowCreateList] = useState(false);
     const [showCreateProduct, setShowCreateProduct] = useState(false);
     const [showListSelected, setShowListSelected] = useState(false);
+    const [listId, setListId] = useState('');
     const [listsBuys, setListsBuys] = useState([]);
-    const [listsBuysOld, setListBuysOld] = useState([])
     const getLists = () => {
         var id_user = props.id_user.toString();
         var lists = []
@@ -35,7 +35,10 @@ const screenMain = (props) => {
             setListsBuys(lists)
         })
     }
-
+    function openList(state, id_list){
+        setListId(id_list)
+        setShowListSelected(state)
+    }
     useEffect(() => {
         getLists()        
     }, [showCreateList])
@@ -49,9 +52,9 @@ const screenMain = (props) => {
                 onCancel={() => setShowCreateProduct(false)} />
 
             {/* Abrir a lista selecionada */}
-            {/* <ListSelected isVisible={showListSelected}
+            <ListSelected isVisible={showListSelected}
                 onCancel={() => setShowListSelected(false)}
-                selectedList={props.id_user} /> */}
+                idUser={props.id_user} idList={listId} />
             {/* {console.log(listsBuys)} */}
             
             <Text style={styles.smartMarket}><Image style={styles.cartLogo} source={cart}/> Smart - Market</Text>
@@ -72,7 +75,7 @@ const screenMain = (props) => {
                     <TO>
                     <View style={styles.flatlist}>
                         <Text style={{ fontSize: 22, marginLeft: '2%' }}
-                            onPress={() => setShowListSelected(true, item._id.toString())}>
+                            onPress={() => openList(true, item._id.toString())}>
                             {item.nameList}
                         </Text>
                     </View>

@@ -13,19 +13,21 @@ import {
 import { connect } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
 import ListBuyServices from '../services/listBuy-services';
-import { addProduct } from '../store/actions/product-actions'
+import { addProduct } from '../store/actions/product-actions';
+import ProductServices from '../services/product-services';
+import { showError } from '../config/common';
 
 const createProduct = (props) => {
-    const [nameProduct, setNameProduct] = useState('');
+    const [nameProduct, setNameProduct] = useState('Teste produto');
     const [brandProduct, setBrandProduct] = useState('');
     const [quantity, setQuantity] = useState('');
     const [unity, setUnity] = useState('');
     const [id_unity, setId_Unity] = useState('');
     const [nameList, setNameList] = useState('Selecione Uma Lista de Compras');
     const [id_list, setId_List] = useState('');
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState(false);
     const [verificador, setVerificador] = useState(1);
-  const [listBuy, setListBuy] = useState([]);
+    const [listBuy, setListBuy] = useState([]);
     const [typeUnity, setTypeUnity] = useState([
         {
             id_unity: 0,
@@ -80,32 +82,38 @@ const createProduct = (props) => {
               nameUnity: 'Pacote'
         }
     ]);
-    // save = () => {
-    //     if (nameProduct === '')
-    //         return Alert.alert('Erro ao criar produto', 'O nome do produto não foi preenchido!')
-    //     if (unity == '')
-    //         return Alert.alert('Erro', 'Selecione uma unidade de medida')
-    //     if (id_list == '')
-    //         return Alert.alert('Erro', 'Selecione uma lista de compras')
-    //     else
-    //         this.props.add([{
-    //             id_product: Math.random(),
-    //             nameProduct: nameProduct,
-    //             brandProduct: brandProduct,
-    //             quantity: quantity,
-    //             unity: unity,
-    //             price: price,
-    //             id_list: id_list,
-    //             status: status
-    //         }])
-    //     Alert.alert('Produto Criado', nameProduct + ' foi criado ' + nameList)
-    //     nameProduct = '';
-    //     brandProduct = '';
-    //     quantity = '';
-    //     unity = '';
-    //     price = '';
-    // }
-    pickerUnity = (index) => {
+   async function save(){
+        if (nameProduct === '')
+            return Alert.alert('Erro ao criar produto', 'O nome do produto não foi preenchido!')
+        if (unity == '')
+            return Alert.alert('Erro', 'Selecione uma unidade de medida')
+        if (id_list == '')
+            return Alert.alert('Erro', 'Selecione uma lista de compras')
+        else
+          await ProductServices.create({nameProduct, brandProduct, quantity,  unity, id_list, status}).then(result => {
+            props.addProduct({
+              nameProduct: nameProduct,
+                brandProduct: brandProduct,
+                quantity: quantity,
+                unity: unity,                
+                id_list: id_list,
+                status: status
+            })
+            Alert.alert('Produto Criado', nameProduct + ' foi criado ' + nameList)
+            nameProduct = '';
+            brandProduct = '';
+            quantity = '';
+            unity = '';
+            price = '';
+          }).catch(err => {
+            if (err.message) {              
+              showError(err.menssage.error)
+            }else{
+              showError(err.menssage)
+            }
+          })
+    }
+    function pickerUnity (index) {
         if (index == '' || index == null) {
             return
         } else {
@@ -117,7 +125,7 @@ const createProduct = (props) => {
             })
         }
     }
-    pickerList = (index) => {
+    function pickerList(index) {
     console.log('PickerList', index);
         if (index == '' || index == null) {
           return
@@ -130,7 +138,7 @@ const createProduct = (props) => {
           })
         }
     }
-  loadList = () => {
+    function loadList(){
         var idUserProps = props.id_user;      
       if (props.isVisible == true && verificador <= 1) {
             ListBuyServices.getAll(idUserProps).then(result => {
@@ -196,7 +204,7 @@ const createProduct = (props) => {
                     <TO onPress={props.onCancel}>
                 <Text style={styles.button}>Cancelar</Text>
               </TO>
-            <TO onPress={() => Alert.alert('tets', 'testet')}>
+            <TO onPress={save}>
                 <Text style={styles.button}>Salvar</Text>
               </TO>
             </View>
@@ -220,7 +228,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        add: (newProduct) => dispatch(addProduct(newProduct))
+        addProduct: (newProduct) => dispatch(addProduct(newProduct))
     }
 }
 

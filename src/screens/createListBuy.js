@@ -16,7 +16,7 @@ import ListBuyServices from "../services/listBuy-services";
 import axios from 'axios';
 
 const createListBuy = (props) => {
-    const [nameList, setNameList] = useState('asdasdsa');
+    const [nameList, setNameList] = useState('');
     const [id_user, setId_User] = useState(props.id_user)
     async function save() {
         if (nameList == '')

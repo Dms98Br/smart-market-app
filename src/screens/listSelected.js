@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import ListBuyServices from '../services/listBuy-services';
+import ProductServices from '../services/product-services';
 //import CheckBox from '@react-native-community/checkbox';
 
 const listSelected = (props) => {
@@ -19,6 +21,27 @@ const listSelected = (props) => {
   const [totalProducts, setTotalProducts] = useState('');
   const [products, setProducts] = useState([]);
 
+  function getNameList(idUser, idList) {    
+    if ((idUser == '') == false) {      
+      ListBuyServices.getIdList(idUser,idList).then(result => {
+        setNameListSelected(result.nameList)        
+      })
+    }
+  }
+  function getProdutos(idList){    
+    var product = []
+    ProductServices.getProductForList(idList).then(result=>{
+      for (let index = 1; index < result.length; index++) {
+        product.push(result[index])
+      }
+    })
+    setProducts(product)
+    
+  }
+  useEffect(() => {
+    getNameList(props.idUser, props.idList);
+    getProdutos(props.idList)
+    }, [props.isVisible])
   return (
     <Modal transparent={true}
       visible={props.isVisible}
@@ -38,13 +61,14 @@ const listSelected = (props) => {
             {/* Itens Adicionado no Carrinho:  {this.remainingItems()}/{this.state.products.length} */}
           </Text>
         </View>
-        {/* {products.length == 0 ? <Text style={styles.listEmpty}>Lista de compras está vazia!</Text> :
-        <FlatList data={this.state.products}
-          keyExtractor={(item, index) => item.id_product.toString()}
+        { products.length == 0 ? <Text style={styles.listEmpty}>Lista de compras está vazia!</Text> : 
+        <FlatList data={products}
+          keyExtractor={(item, index) => item._id}
           renderItem={({item}) =>
-            <TO >
+          <TO >
               <View style={styles.flatlist}>
                   <Text style={styles.nameProduct}>
+                      {console.log('Aqui',item)}
                       {item.nameProduct}
                   </Text> 
                   <Text style={{fontSize: 22, marginTop: '3%', marginLeft: '3%'}}>
@@ -60,13 +84,14 @@ const listSelected = (props) => {
               <View style={ styles.bottomFlatList }>
                 <View style={styles.checkBOX}>
                   <Text style={{ fontSize: 20, marginLeft: '3%' }}>Item Inserido no Carrinho:</Text>
-                  <CheckBox
-                    disabled={false} value={item.status} onValueChange={() => this.onCheckChanged(item.id_product)}
-                  />
+                  {/* <CheckBox
+                    disabled={false} value={item.status} onValueChange={() => this.onCheckChanged(item._id)}
+                  /> */}
                 </View>
               </View>
             </TO>
-          } />} */}
+          }/>
+        }
       </View>
     </Modal>
   )
@@ -75,7 +100,6 @@ const listSelected = (props) => {
 
 
 const mapStateToProps = (state) => {
-  //console.log('state.productReducer.newProduct',state.productReducer.newProduct);
   return{
     listsBuys: state.listsBuysReducer.listBuy,
     products: state.productReducer.newProduct
@@ -163,6 +187,36 @@ const styles = StyleSheet.create({
 
 export default connect(mapStateToProps) (listSelected)
 
+// {products.length == 0 ? <Text style={styles.listEmpty}>Lista de compras está vazia!</Text> :
+// <FlatList data={this.state.products}
+//   keyExtractor={(item, index) => item.id_product.toString()}
+//   renderItem={({item}) =>
+//     <TO >
+//       <View style={styles.flatlist}>
+//           <Text style={styles.nameProduct}>
+//               {item.nameProduct}
+//           </Text> 
+//           <Text style={{fontSize: 22, marginTop: '3%', marginLeft: '3%'}}>
+//             Marca: {item.brandProduct}
+//           </Text>
+//           <Text  style={{fontSize: 22, marginTop: '3%', marginLeft: '3%'}}>
+//             Quantidade: {item.quantity}
+//           </Text>
+//           <Text style={{fontSize: 22, marginTop: '3%', marginLeft: '3%'}}>
+//             Unidade: {item.unity}
+//           </Text>
+//       </View>
+//       <View style={ styles.bottomFlatList }>
+//         <View style={styles.checkBOX}>
+//           <Text style={{ fontSize: 20, marginLeft: '3%' }}>Item Inserido no Carrinho:</Text>
+//           <CheckBox
+//             disabled={false} value={item.status} onValueChange={() => this.onCheckChanged(item.id_product)}
+//           />
+//         </View>
+//       </View>
+//     </TO>
+//   }/>
+
 /*
 
 class listSelected extends Component{
@@ -216,8 +270,11 @@ class listSelected extends Component{
       visible={this.props.isVisible}
         animationType='slide'>
         {this.getNameList(this.props.selectedList)}
+
         {this.getProduct(this.props.selectedList, this.props.isVisible)}
+
         <TouchableWithoutFeedback onPress={this.props.onCancel}>
+
           <View style={styles.background}></View>
         </TouchableWithoutFeedback>
         <View style={ styles.backgroundView}>

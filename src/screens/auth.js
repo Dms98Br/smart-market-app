@@ -18,10 +18,10 @@ import axios from 'axios';
 
 const auth = (props) => {
     const [stateNew, setStateNew] = useState(false);
-    const [name, setName] = useState('');//Daniel Silva
-    const [email, setEmail] = useState('');//daniel@silva
-    const [password, setPassword] = useState('');//123456
-    const [checkPassword, setCheckPassword] = useState('');
+    const [name, setName] = useState('Daniel Moya');//Daniel Silva
+    const [email, setEmail] = useState('daniel@silva.com');//daniel@silva
+    const [password, setPassword] = useState('1234567');//123456
+    const [checkPassword, setCheckPassword] = useState('1234567');
     function signinOrSignup() {
         if (stateNew) {
             signup()

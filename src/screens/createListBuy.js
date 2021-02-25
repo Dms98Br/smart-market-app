@@ -13,7 +13,6 @@ import React, { useState } from 'react'
 import { addList } from '../store/actions/listBuy-actions'
 import { server, showError, showSuccess } from '../config/common';
 import ListBuyServices from "../services/listBuy-services";
-import axios from 'axios';
 
 const createListBuy = (props) => {
     const [nameList, setNameList] = useState('');
@@ -23,6 +22,7 @@ const createListBuy = (props) => {
             return Alert.alert('Erro ao criar a lista de compras', 'A lista precisa ter um nome')
         else
         await ListBuyServices.create({ nameList, id_user }).then(result => {
+            
             props.addListBuy({
                 nameList: result.nameList,
                 id_user: result.id_user

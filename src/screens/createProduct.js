@@ -18,12 +18,12 @@ import ProductServices from '../services/product-services';
 import { showError } from '../config/common';
 
 const createProduct = (props) => {
-    const [nameProduct, setNameProduct] = useState('Teste produto');
+    const [nameProduct, setNameProduct] = useState('');
     const [brandProduct, setBrandProduct] = useState('');
     const [quantity, setQuantity] = useState('');
     const [unity, setUnity] = useState('');
     const [id_unity, setId_Unity] = useState('');
-    const [nameList, setNameList] = useState('Selecione Uma Lista de Compras');
+    const [nameList, setNameList] = useState('');
     const [id_list, setId_List] = useState('');
     const [status, setStatus] = useState(false);
     const [verificador, setVerificador] = useState(1);
@@ -91,22 +91,15 @@ const createProduct = (props) => {
             return Alert.alert('Erro', 'Selecione uma lista de compras')
         else
           await ProductServices.create({nameProduct, brandProduct, quantity,  unity, id_list, status}).then(result => {
-            props.addProduct({
-              nameProduct: nameProduct,
-                brandProduct: brandProduct,
-                quantity: quantity,
-                unity: unity,                
-                id_list: id_list,
-                status: status
-            })
             Alert.alert('Produto Criado', nameProduct + ' foi criado ' + nameList)
-            nameProduct = '';
-            brandProduct = '';
-            quantity = '';
-            unity = '';
-            price = '';
+            setNameProduct('');
+            setBrandProduct('');
+            setQuantity('');
+            setTypeUnity('Selecione uma unidade de medida')
+            setNameList('Selecione Uma Lista de Compras')
           }).catch(err => {
-            if (err.message) {              
+            console.log('aqui save product',err);             
+            if (err.message) { 
               showError(err.menssage.error)
             }else{
               showError(err.menssage)
@@ -126,7 +119,6 @@ const createProduct = (props) => {
         }
     }
     function pickerList(index) {
-    console.log('PickerList', index);
         if (index == '' || index == null) {
           return
         } else {
@@ -166,15 +158,15 @@ const createProduct = (props) => {
           </TouchableWithoutFeedback>
           <View style={styles.container}>
             <Text style={styles.header}>Criar Produto</Text>
-                <TextInput placeholder='Nome Do Produto' value={nameProduct}
+                <TextInput placeholder= ' Nome Do Produto' value={nameProduct}
                     onChangeText={nameProduct => setNameProduct(nameProduct)}
               style={styles.input} />
   
-                <TextInput placeholder='Marca Do Produto' value={brandProduct}
+                <TextInput placeholder=' Marca Do Produto' value={brandProduct}
                     onChangeText={brandProduct => setBrandProduct(brandProduct)}
               style={styles.input} />
   
-                <TextInput placeholder='Quantidade' value={quantity}
+                <TextInput placeholder=' Quantidade' value={quantity}
                     onChangeText={quantity => setQuantity(quantity)}
               style={styles.input} />
             <Picker style={styles.picker}

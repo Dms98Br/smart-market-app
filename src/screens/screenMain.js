@@ -64,8 +64,8 @@ const screenMain = (props) => {
                         Suas Listas
                 </Text>
                 </View>
-                <View style={styles.modal}>
-                </View>
+                {/* <View style={styles.modal}>
+                </View> */}
                 <View>
                     
                 </View>

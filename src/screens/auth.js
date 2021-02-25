@@ -18,10 +18,10 @@ import axios from 'axios';
 
 const auth = (props) => {
     const [stateNew, setStateNew] = useState(false);
-    const [name, setName] = useState('Daniel Moya');//Daniel Silva
-    const [email, setEmail] = useState('daniel@silva.com');//daniel@silva
-    const [password, setPassword] = useState('1234567');//123456
-    const [checkPassword, setCheckPassword] = useState('1234567');
+    const [name, setName] = useState('');//Daniel Silva
+    const [email, setEmail] = useState('');//daniel@silva
+    const [password, setPassword] = useState('');//123456
+    const [checkPassword, setCheckPassword] = useState('');
     function signinOrSignup() {
         if (stateNew) {
             signup()
@@ -44,10 +44,10 @@ const auth = (props) => {
         }
 
     }
-    useEffect(() => {
-        console.log('auth useEffect');
-        Alert.alert('AVISO','O Smart-Market está em fase de desenvolvimento')
-    }, [])
+    // useEffect(() => {
+    //     console.log('auth useEffect');
+    //     Alert.alert('AVISO','O Smart-Market está em fase de desenvolvimento')
+    // }, [])
     async function signin() {
         if ( email === '' || password ==='')
         return showError('Preencha todos os campos')

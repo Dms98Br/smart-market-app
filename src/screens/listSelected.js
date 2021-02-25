@@ -20,26 +20,29 @@ const listSelected = (props) => {
   const [nameListSelected, setNameListSelected] = useState('');
   const [totalProducts, setTotalProducts] = useState('');
   const [products, setProducts] = useState([]);
-
+  const [loaderBlock, setLoaderBlock] = useState({show: false, message: ''})
   function getNameList(idUser, idList) {    
-    if ((idUser == '') == false) {      
+    if ((idUser == '') == false) {
+      setLoaderBlock({show: true, message: "Carregando produtos da lista"})
       ListBuyServices.getIdList(idUser,idList).then(result => {
-        setNameListSelected(result.nameList)        
-      })
+        setNameListSelected(result.nameList);
+        setLoaderBlock({show: false, message: ""})
+      })            
     }
   }
-  function getProdutos(idList){    
+  function getProdutos(idList){
+    setLoaderBlock({show: true, message: "Carregando produtos da lista"})
     var product = []
     ProductServices.getProductForList(idList).then(result=>{
       for (let index = 1; index < result.length; index++) {
         product.push(result[index])
       }
-    })
-    setProducts(product)
-    
+      setLoaderBlock({show: false, message: ""})
+      setProducts(product);
+    })    
   }
   useEffect(() => {
-    getNameList(props.idUser, props.idList);
+    getNameList(props.idUser, props.idList);    
     getProdutos(props.idList)
     }, [props.isVisible])
   return (
@@ -58,7 +61,7 @@ const listSelected = (props) => {
         </View>
         <View style={styles.remainingItems}>
           <Text style={styles.textReamaingItens}>
-            {/* Itens Adicionado no Carrinho:  {this.remainingItems()}/{this.state.products.length} */}
+            {/* Itens Adicionado no Carrinho:  {this.remainingItems()}/{products.length} */}
           </Text>
         </View>
         { products.length == 0 ? <Text style={styles.listEmpty}>Lista de compras está vazia!</Text> : 
@@ -68,7 +71,7 @@ const listSelected = (props) => {
           <TO >
               <View style={styles.flatlist}>
                   <Text style={styles.nameProduct}>
-                      {console.log('Aqui',item)}
+                      
                       {item.nameProduct}
                   </Text> 
                   <Text style={{fontSize: 22, marginTop: '3%', marginLeft: '3%'}}>
